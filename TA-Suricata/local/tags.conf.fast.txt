@@ -1,0 +1,4 @@
+## Only tested on eve.fast not eve.json log
+[eventtype=suricata_fast_ids_attack]
+ids = enabled
+attack = enabled

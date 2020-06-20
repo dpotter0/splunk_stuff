@@ -1,0 +1,260 @@
+<form stylesheet="Home.css,hover.css,singlevalue.css,hide_timeindicator.css">
+  <label>Network Traffic</label>
+  <search id="netfilter">
+    <query>eventtype="syslog_netfilter" $direction$ host="$router$" $action$ $internal_src$ $internal_dest$ $src_ip$ $dest_ip$ $src_port$ $dest_port$ (clientip!="0.0.0.0" OR "255.255.255.255") |fields *</query>
+    <earliest>$field1.earliest$</earliest>
+    <latest>$field1.latest$</latest>
+  </search>
+  <fieldset submitButton="true" autoRun="true">
+    <input type="radio" token="router" searchWhenChanged="true">
+      <label>Device</label>
+      <choice value="*">Any</choice>
+      <default>*</default>
+      <initialValue>*</initialValue>
+      <fieldForLabel>host</fieldForLabel>
+      <fieldForValue>host</fieldForValue>
+      <search>
+        <query>| tstats summariesonly=true values(host) as host where `tomato_index` sourcetype="syslog:netfilter" |mvexpand host</query>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </search>
+    </input>
+    <input type="radio" token="direction" searchWhenChanged="true">
+      <label>Traffic Direction</label>
+      <choice value="*">Any</choice>
+      <choice value="inbound">inbound</choice>
+      <choice value="outbound">outbound</choice>
+      <default>*</default>
+      <prefix>direction="</prefix>
+      <suffix>"</suffix>
+      <initialValue>*</initialValue>
+    </input>
+    <input type="radio" token="internal_src" searchWhenChanged="true">
+      <label>internal_src</label>
+      <choice value="`external_src_ip` OR  `internal_src_ip`">any</choice>
+      <choice value="`internal_src_ip`">yes</choice>
+      <choice value="`external_src_ip`">no</choice>
+      <search>
+        <query/>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </search>
+    </input>
+    <input type="radio" token="internal_dest" searchWhenChanged="true">
+      <label>internal_dest</label>
+      <choice value="`internal_dest_ip` OR `external_dest_ip`">any</choice>
+      <choice value="`internal_dest_ip`">yes</choice>
+      <choice value="`external_dest_ip`">no</choice>
+    </input>
+    <input type="radio" token="action" searchWhenChanged="true">
+      <label>Action</label>
+      <choice value="*">Any</choice>
+      <default>*</default>
+      <initialValue>*</initialValue>
+      <prefix>action="</prefix>
+      <suffix>"</suffix>
+      <fieldForLabel>action</fieldForLabel>
+      <fieldForValue>action</fieldForValue>
+      <search>
+        <query>eventtype="syslog_netfilter" action=* |dedup action|table action</query>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </search>
+    </input>
+    <input type="text" token="src_ip" searchWhenChanged="false">
+      <label>src_ip</label>
+      <default>*</default>
+      <initialValue>*</initialValue>
+      <prefix>src_ip="</prefix>
+      <suffix>"</suffix>
+    </input>
+    <input type="text" token="src_port" searchWhenChanged="false">
+      <label>src_port</label>
+      <default>*</default>
+      <initialValue>*</initialValue>
+      <prefix>src_port="</prefix>
+      <suffix>"</suffix>
+    </input>
+    <input type="text" token="dest_ip" searchWhenChanged="false">
+      <label>dest_ip</label>
+      <default>*</default>
+      <initialValue>*</initialValue>
+      <prefix>dest_ip="</prefix>
+      <suffix>"</suffix>
+    </input>
+    <input type="text" token="dest_port" searchWhenChanged="false">
+      <label>dest_port</label>
+      <default>*</default>
+      <initialValue>*</initialValue>
+      <prefix>dest_port="</prefix>
+      <suffix>"</suffix>
+    </input>
+    <input type="time" token="field1">
+      <label></label>
+      <default>
+        <earliest>-60m@m</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <title>Connection by Country</title>
+      <single>
+        <search base="netfilter">
+          <query>| iplocation clientip | top limit=0 Country | eval percent=round(percent,2) | stats count(Country) As Total</query>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="underLabel">IDENTIFIED</option>
+        <option name="unit">Countries</option>
+      </single>
+      <single>
+        <search base="netfilter">
+          <query>| iplocation clientip | top limit=1 Country | eval percent=round(percent,2) | fields Country</query>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="underLabel">TOP COUNTRY ORIGIN</option>
+      </single>
+      <single>
+        <search base="netfilter">
+          <query>| iplocation clientip | top limit=1 Country | eval percent=round(percent,2) | fields percent</query>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="underLabel">OF TOTAL TRAFFIC</option>
+        <option name="unit">%</option>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <map>
+        <title>External Clients by Action</title>
+        <search base="netfilter">
+          <query>|eval external_client=if(direction=="inbound",src_ip,dest_ip)  |  iplocation external_client | geostats globallimit=10 latfield=lat longfield=lon count by action</query>
+        </search>
+        <option name="drilldown">all</option>
+        <option name="mapping.data.maxClusters">100</option>
+        <option name="mapping.map.center">(0,0)</option>
+        <option name="mapping.map.zoom">2</option>
+        <option name="mapping.markerLayer.markerMaxSize">50</option>
+        <option name="mapping.markerLayer.markerMinSize">10</option>
+        <option name="mapping.markerLayer.markerOpacity">0.8</option>
+        <option name="mapping.tileLayer.maxZoom">7</option>
+        <option name="mapping.tileLayer.minZoom">0</option>
+      </map>
+      <table>
+        <title>Top 10 Clients IP</title>
+        <search base="netfilter">
+          <query>|stats count by clientip,action | iplocation clientip | table clientip,count,City,Country,action |sort by -count</query>
+        </search>
+        <option name="count">10</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel>
+      <chart>
+        <title>Traffic Volume Trend by Action</title>
+        <search base="netfilter">
+          <query>| timechart count by action</query>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.text">Time</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.text">Connections</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">all</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.placement">bottom</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+      <chart>
+        <title>Traffic Volume Trend by Country</title>
+        <search base="netfilter">
+          <query>| iplocation clientip | timechart limit=10 count by Country | fields - NULL</query>
+        </search>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.text">Time</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.text">Connections</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">all</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.placement">bottom</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Top Sources by Action</title>
+      <table>
+        <search base="netfilter">
+          <query>| stats count by src_ip,action | sort count desc</query>
+        </search>
+        <option name="count">10</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Top Destination by Action</title>
+      <table>
+        <search base="netfilter">
+          <query>| stats count by dest_ip,action | sort -count</query>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel>
+      <chart>
+        <title>Top Dest Ports</title>
+        <search base="netfilter">
+          <query>| stats count by dest_port</query>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.005</option>
+        <option name="charting.drilldown">none</option>
+      </chart>
+    </panel>
+  </row>
+</form>

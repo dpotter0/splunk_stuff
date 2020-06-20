@@ -1,0 +1,2 @@
+sourcetype,protocol,vendor,product
+opnsense:postfix,SMTP,Postfix,Email Server

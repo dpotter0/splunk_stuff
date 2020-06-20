@@ -1,0 +1,282 @@
+icmp_type,icmp_name,icmp_code,icmp_status,icmp_description
+0,Echo Reply,0,,Echo reply (used to ping)
+1,,,unassigned,Reserved
+2,,,unassigned,Reserved
+3,Destination Unreachable,0,,Destination network unreachable
+3,Destination Unreachable,1,,Destination host unreachable
+3,Destination Unreachable,2,,Destination protocol unreachable
+3,Destination Unreachable,3,,Destination port unreachable
+3,Destination Unreachable,4,,"Fragmentation required, and DF flag set"
+3,Destination Unreachable,5,,Source route failed
+3,Destination Unreachable,6,,Destination network unknown
+3,Destination Unreachable,7,,Destination host unknown
+3,Destination Unreachable,8,,Source host isolated
+3,Destination Unreachable,9,,Network administratively prohibited
+3,Destination Unreachable,10,,Host administratively prohibited
+3,Destination Unreachable,11,,Network unreachable for ToS
+3,Destination Unreachable,12,,Host unreachable for ToS
+3,Destination Unreachable,13,,Communication administratively prohibited
+3,Destination Unreachable,14,,Host Precedence Violation
+3,Destination Unreachable,15,,Precedence cutoff in effect
+4,Source Quench,0,deprecated,Source quench (congestion control)
+5,Redirect Message,0,,Redirect Datagram for the Network
+5,Redirect Message,1,,Redirect Datagram for the Host
+5,Redirect Message,2,,Redirect Datagram for the ToS & network
+5,Redirect Message,3,,Redirect Datagram for the TOS & host
+6,,,deprecated,Alternate Host Address
+7,,,unassigned,Reserved
+8,Echo Request,0,,Echo request (used to ping)
+9,Router Advertisement,0,,Router Advertisement
+10,Router Solicitation,0,,Router discovery/selection/solicitation
+11,Time Exceeded,0,,TTL expired in transit
+11,Time Exceeded,1,,Fragment reassembly time exceeded
+12,Parameter Problem: Bad IP header,0,,Pointer indicates the error
+12,Parameter Problem: Bad IP header,1,,Missing a required option
+12,Parameter Problem: Bad IP header,2,,Bad length
+13,Timestamp,0,,Timestamp
+14,Timestamp Reply,0,,Timestamp reply
+15,Information Request,0,deprecated,Information Request
+16,Information Reply,0,deprecated,Information Reply
+17,Address Mask Request,0,deprecated,Address Mask Request
+18,Address Mask Reply,0,deprecated,Address Mask Reply
+19,,,reserved,Reserved for security
+20,,,reserved,Reserved for robustness experiment
+21,,,reserved,Reserved for robustness experiment
+22,,,reserved,Reserved for robustness experiment
+23,,,reserved,Reserved for robustness experiment
+24,,,reserved,Reserved for robustness experiment
+25,,,reserved,Reserved for robustness experiment
+26,,,reserved,Reserved for robustness experiment
+27,,,reserved,Reserved for robustness experiment
+28,,,reserved,Reserved for robustness experiment
+29,,,reserved,Reserved for robustness experiment
+30,Traceroute,0,deprecated,Information Request
+31,,,deprecated,Datagram Conversion Error
+32,,,deprecated,Mobile Host Redirect
+33,,,deprecated,Where-Are-You (originally meant for IPv6)
+34,,,deprecated,Here-I-Am (originally meant for IPv6)
+35,,,deprecated,Mobile Registration Request
+36,,,deprecated,Mobile Registration Reply
+37,,,deprecated,Domain Name Request
+38,,,deprecated,Domain Name Reply
+39,,,deprecated,"SKIP Algorithm Discovery Protocol, Simple Key-Management for Internet Protocol"
+40,,,,"Photuris, Security failures"
+41,,,experimental,ICMP for experimental mobility protocols such as Seamoby [RFC4065]
+42,Extended Echo Request,0,,No Error
+43,Extended Echo Reply,0,,No Error
+43,Extended Echo Reply,1,,Malformed Query
+43,Extended Echo Reply,2,,No Such Interface
+43,Extended Echo Reply,3,,No Such Table Entry
+43,Extended Echo Reply,4,,Multiple Interfaces Satisfy Query
+44,,,unassigned,Reserved
+45,,,unassigned,Reserved
+46,,,unassigned,Reserved
+47,,,unassigned,Reserved
+48,,,unassigned,Reserved
+49,,,unassigned,Reserved
+50,,,unassigned,Reserved
+51,,,unassigned,Reserved
+52,,,unassigned,Reserved
+53,,,unassigned,Reserved
+54,,,unassigned,Reserved
+55,,,unassigned,Reserved
+56,,,unassigned,Reserved
+57,,,unassigned,Reserved
+58,,,unassigned,Reserved
+59,,,unassigned,Reserved
+60,,,unassigned,Reserved
+61,,,unassigned,Reserved
+62,,,unassigned,Reserved
+63,,,unassigned,Reserved
+64,,,unassigned,Reserved
+65,,,unassigned,Reserved
+66,,,unassigned,Reserved
+67,,,unassigned,Reserved
+68,,,unassigned,Reserved
+69,,,unassigned,Reserved
+70,,,unassigned,Reserved
+71,,,unassigned,Reserved
+72,,,unassigned,Reserved
+73,,,unassigned,Reserved
+74,,,unassigned,Reserved
+75,,,unassigned,Reserved
+76,,,unassigned,Reserved
+77,,,unassigned,Reserved
+78,,,unassigned,Reserved
+79,,,unassigned,Reserved
+80,,,unassigned,Reserved
+81,,,unassigned,Reserved
+82,,,unassigned,Reserved
+83,,,unassigned,Reserved
+84,,,unassigned,Reserved
+85,,,unassigned,Reserved
+86,,,unassigned,Reserved
+87,,,unassigned,Reserved
+88,,,unassigned,Reserved
+89,,,unassigned,Reserved
+90,,,unassigned,Reserved
+91,,,unassigned,Reserved
+92,,,unassigned,Reserved
+93,,,unassigned,Reserved
+94,,,unassigned,Reserved
+95,,,unassigned,Reserved
+96,,,unassigned,Reserved
+97,,,unassigned,Reserved
+98,,,unassigned,Reserved
+99,,,unassigned,Reserved
+100,,,unassigned,Reserved
+101,,,unassigned,Reserved
+102,,,unassigned,Reserved
+103,,,unassigned,Reserved
+104,,,unassigned,Reserved
+105,,,unassigned,Reserved
+106,,,unassigned,Reserved
+107,,,unassigned,Reserved
+108,,,unassigned,Reserved
+109,,,unassigned,Reserved
+110,,,unassigned,Reserved
+111,,,unassigned,Reserved
+112,,,unassigned,Reserved
+113,,,unassigned,Reserved
+114,,,unassigned,Reserved
+115,,,unassigned,Reserved
+116,,,unassigned,Reserved
+117,,,unassigned,Reserved
+118,,,unassigned,Reserved
+119,,,unassigned,Reserved
+120,,,unassigned,Reserved
+121,,,unassigned,Reserved
+122,,,unassigned,Reserved
+123,,,unassigned,Reserved
+124,,,unassigned,Reserved
+125,,,unassigned,Reserved
+126,,,unassigned,Reserved
+127,,,unassigned,Reserved
+128,,,unassigned,Reserved
+129,,,unassigned,Reserved
+130,,,unassigned,Reserved
+131,,,unassigned,Reserved
+132,,,unassigned,Reserved
+133,,,unassigned,Reserved
+134,,,unassigned,Reserved
+135,,,unassigned,Reserved
+136,,,unassigned,Reserved
+137,,,unassigned,Reserved
+138,,,unassigned,Reserved
+139,,,unassigned,Reserved
+140,,,unassigned,Reserved
+141,,,unassigned,Reserved
+142,,,unassigned,Reserved
+143,,,unassigned,Reserved
+144,,,unassigned,Reserved
+145,,,unassigned,Reserved
+146,,,unassigned,Reserved
+147,,,unassigned,Reserved
+148,,,unassigned,Reserved
+149,,,unassigned,Reserved
+150,,,unassigned,Reserved
+151,,,unassigned,Reserved
+152,,,unassigned,Reserved
+153,,,unassigned,Reserved
+154,,,unassigned,Reserved
+155,,,unassigned,Reserved
+156,,,unassigned,Reserved
+157,,,unassigned,Reserved
+158,,,unassigned,Reserved
+159,,,unassigned,Reserved
+160,,,unassigned,Reserved
+161,,,unassigned,Reserved
+162,,,unassigned,Reserved
+163,,,unassigned,Reserved
+164,,,unassigned,Reserved
+165,,,unassigned,Reserved
+166,,,unassigned,Reserved
+167,,,unassigned,Reserved
+168,,,unassigned,Reserved
+169,,,unassigned,Reserved
+170,,,unassigned,Reserved
+171,,,unassigned,Reserved
+172,,,unassigned,Reserved
+173,,,unassigned,Reserved
+174,,,unassigned,Reserved
+175,,,unassigned,Reserved
+176,,,unassigned,Reserved
+177,,,unassigned,Reserved
+178,,,unassigned,Reserved
+179,,,unassigned,Reserved
+180,,,unassigned,Reserved
+181,,,unassigned,Reserved
+182,,,unassigned,Reserved
+183,,,unassigned,Reserved
+184,,,unassigned,Reserved
+185,,,unassigned,Reserved
+186,,,unassigned,Reserved
+187,,,unassigned,Reserved
+188,,,unassigned,Reserved
+189,,,unassigned,Reserved
+190,,,unassigned,Reserved
+191,,,unassigned,Reserved
+192,,,unassigned,Reserved
+193,,,unassigned,Reserved
+194,,,unassigned,Reserved
+195,,,unassigned,Reserved
+196,,,unassigned,Reserved
+197,,,unassigned,Reserved
+198,,,unassigned,Reserved
+199,,,unassigned,Reserved
+200,,,unassigned,Reserved
+201,,,unassigned,Reserved
+202,,,unassigned,Reserved
+203,,,unassigned,Reserved
+204,,,unassigned,Reserved
+205,,,unassigned,Reserved
+206,,,unassigned,Reserved
+207,,,unassigned,Reserved
+208,,,unassigned,Reserved
+209,,,unassigned,Reserved
+210,,,unassigned,Reserved
+211,,,unassigned,Reserved
+212,,,unassigned,Reserved
+213,,,unassigned,Reserved
+214,,,unassigned,Reserved
+215,,,unassigned,Reserved
+216,,,unassigned,Reserved
+217,,,unassigned,Reserved
+218,,,unassigned,Reserved
+219,,,unassigned,Reserved
+220,,,unassigned,Reserved
+221,,,unassigned,Reserved
+222,,,unassigned,Reserved
+223,,,unassigned,Reserved
+224,,,unassigned,Reserved
+225,,,unassigned,Reserved
+226,,,unassigned,Reserved
+227,,,unassigned,Reserved
+228,,,unassigned,Reserved
+229,,,unassigned,Reserved
+230,,,unassigned,Reserved
+231,,,unassigned,Reserved
+232,,,unassigned,Reserved
+233,,,unassigned,Reserved
+234,,,unassigned,Reserved
+235,,,unassigned,Reserved
+236,,,unassigned,Reserved
+237,,,unassigned,Reserved
+238,,,unassigned,Reserved
+239,,,unassigned,Reserved
+240,,,unassigned,Reserved
+241,,,unassigned,Reserved
+242,,,unassigned,Reserved
+243,,,unassigned,Reserved
+244,,,unassigned,Reserved
+245,,,unassigned,Reserved
+246,,,unassigned,Reserved
+247,,,unassigned,Reserved
+248,,,unassigned,Reserved
+249,,,unassigned,Reserved
+250,,,unassigned,Reserved
+251,,,unassigned,Reserved
+252,,,unassigned,Reserved
+253,,,experimental,RFC3692-style Experiment 1 (RFC 4727)
+254,,,experimental,RFC3692-style Experiment 2 (RFC 4727)
+255,,,reserved,Reserved

@@ -1,0 +1,116 @@
+<form>
+  <label>Network Traffic</label>
+  <fieldset submitButton="false" autoRun="true">
+    <input type="time" token="field1">
+      <label></label>
+      <default>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+    <input type="multiselect" token="host" searchWhenChanged="true">
+      <label>host</label>
+      <choice value="*">any</choice>
+      <default>*</default>
+      <initialValue>*</initialValue>
+      <valuePrefix>host="</valuePrefix>
+      <valueSuffix>"</valueSuffix>
+      <delimiter> OR </delimiter>
+      <fieldForLabel>host</fieldForLabel>
+      <fieldForValue>host</fieldForValue>
+      <search>
+        <query>| tstats summariesonly=true values(host) as host where index=opnsense |mvexpand host</query>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </search>
+    </input>
+    <input type="dropdown" token="direction" searchWhenChanged="true">
+      <label>direction</label>
+      <choice value="any">any</choice>
+      <choice value="inbound">inbound</choice>
+      <choice value="outbound">outbound</choice>
+      <default>inbound</default>
+      <initialValue>inbound</initialValue>
+      <prefix>direction="</prefix>
+      <suffix>"</suffix>
+    </input>
+    <input type="multiselect" token="dest_int" searchWhenChanged="true">
+      <label>dest_int</label>
+      <choice value="*">any</choice>
+      <valuePrefix>dest_int="</valuePrefix>
+      <valueSuffix>"</valueSuffix>
+      <delimiter> OR </delimiter>
+      <fieldForLabel>dest_int</fieldForLabel>
+      <fieldForValue>dest_int</fieldForValue>
+      <search>
+        <query>index=opnsense sourcetype="opnsense:filterlog" dest_int=* |stats values(dest_int) as dest_int |mvexpand dest_int</query>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </search>
+      <initialValue>*</initialValue>
+    </input>
+    <input type="radio" token="action" searchWhenChanged="true">
+      <label>action</label>
+      <choice value="*">any</choice>
+      <choice value="allowed">allowed</choice>
+      <choice value="blocked">blocked</choice>
+      <prefix>action="</prefix>
+      <suffix>"</suffix>
+      <initialValue>*</initialValue>
+      <default>*</default>
+    </input>
+    <input type="text" token="filter" searchWhenChanged="true">
+      <label>filter</label>
+      <initialValue>ip_version="4" OR ip_version="6" NOT src_ip="::1"</initialValue>
+      <default>ip_version="4" OR ip_version="6" NOT src_ip="::1"</default>
+    </input>
+    <input type="multiselect" token="eventtype" searchWhenChanged="true">
+      <label>Include Eventtypes</label>
+      <choice value="filterlog_public_dhcp">public_dhcp</choice>
+      <choice value="filterlog_internal_src_ip">internal_src_ip</choice>
+      <choice value="filterlog_external_src_ip">external_src_ip</choice>
+      <choice value="filterlog_internal_dest_ip">internal_dest_ip</choice>
+      <choice value="filterlog_external_dest_ip">external_dest_ip</choice>
+      <choice value="filterlog_localhost_src_ip">localhost_src_ip</choice>
+      <choice value="filterlog_localhost_dest_ip">localhost_dest_ip</choice>
+      <choice value="filterlog_ipv6_localhost_src_ip">ipv6_localhost_src_ip</choice>
+      <choice value="filterlog_ipv6_localhost_dest_ip">ipv6_localhost_dest_ip</choice>
+      <choice value="filterlog_ipv6_autoconfig">ipv6_autoconfig</choice>
+      <delimiter> OR </delimiter>
+      <valuePrefix>eventtype="</valuePrefix>
+      <valueSuffix>"</valueSuffix>
+      <initialValue>filterlog_public_dhcp,filterlog_internal_src_ip,filterlog_external_src_ip,filterlog_internal_dest_ip,filterlog_external_dest_ip,filterlog_localhost_src_ip,filterlog_localhost_dest_ip,filterlog_ipv6_localhost_src_ip,filterlog_ipv6_localhost_dest_ip,filterlog_ipv6_autoconfig</initialValue>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <title>Network Traffic</title>
+      <input type="radio" token="sort_field" searchWhenChanged="true">
+        <label>sort_field</label>
+        <choice value="action">action</choice>
+        <choice value="dest_int">dest_int</choice>
+        <choice value="direction">direction</choice>
+        <choice value="host">host</choice>
+        <choice value="ip_version">ip_version</choice>
+        <choice value="eventtype">eventtype</choice>
+        <default>action</default>
+        <initialValue>action</initialValue>
+      </input>
+      <chart>
+        <search>
+          <query>index=opnsense sourcetype="opnsense:filterlog" $host$ $direction$ $dest_int$ $action$ $eventtype$
+| stats values(host) as host values(direction) as direction values(dest_int) as dest_int values(action) as action values(eventtype) as eventtype values(ip_version) as ip_version by _time
+| mvexpand eventtype | mvexpand action | mvexpand direction | mvexpand host | mvexpand dest_int | mvexpand ip_version
+| where $eventtype$
+| timechart count by $sort_field$</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="charting.chart">area</option>
+        <option name="charting.drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+</form>

@@ -1,0 +1,8 @@
+##Only tested on eve.fast log, not eve.json
+[suricata]
+EVAL-action = "blocked"
+EVAL-dest = dest_ip
+EVAL-severity = case(severity>3,"critical",severity=="3","high",severity=="2","medium",severity=="1","low",severity=="0","informational")
+EVAL-category = classification
+EVAL-vendor_product = "Suricata"
+EVAL-signature = name

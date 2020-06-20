@@ -1,0 +1,167 @@
+<form>
+  <label>System Monitoring</label>
+  <fieldset submitButton="true" autoRun="true">
+    <input type="time" token="field1">
+      <label></label>
+      <default>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+    <input type="dropdown" token="router" searchWhenChanged="true">
+      <label>router</label>
+      <initialValue>*</initialValue>
+      <fieldForLabel>host</fieldForLabel>
+      <fieldForValue>host</fieldForValue>
+      <search>
+        <query>| tstats summariesonly=true values(host) as host where `tomato_index` sourcetype=syslog:* |mvexpand host</query>
+        <earliest>-24h@h</earliest>
+        <latest>now</latest>
+      </search>
+      <choice value="*">Any</choice>
+      <default>*</default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <title>Router Info</title>
+      <table>
+        <search>
+          <query>eventtype=tomato sourcetype=syslog:preinit firmware_version=* host="$router$" |head 1| table firmware_model,firmware_version,firmware_build</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>WAN IP</title>
+      <single>
+        <search>
+          <query>eventtype=tomato sourcetype="syslog:udhcpc" lease_duration=* host="$router$" |table dest_ip |rename dest_ip AS "WAN IP" |head 1</query>
+          <earliest>-7d@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>TOR Status</title>
+      <table>
+        <search>
+          <query>eventtype=tomato sourcetype="syslog:Tor" host="$router$" tor_btstrp=* 
+| head 1 
+| table _time,tor_btstrp 
+| eval tor_btstrp=if(tor_btstrp=="100%", "TOR Up", "TOR Down")
+| rename tor_btstrp AS "TOR Status"</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">100</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel>
+      <title>VPN Status</title>
+      <table>
+        <search>
+          <query>eventtype=tomato sourcetype="syslog:openvpn" host="$router$" action=* 
+| head 1 
+| eval action=case(action=="start", "VPN UP", action=="end", "VPN DOWN")
+| table _time,action 
+| rename action AS "Last Action"</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">100</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>NTP Sync By Status</title>
+      <table>
+        <search>
+          <query>eventtype=tomato eventtype=syslog_ntpc host="$router$" |eval ntp_updated=if(isnull(ntp_updated),"0",ntp_updated) |head 5 | table _time,ntp_action,ntp_updated,action</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">100</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Login Attempts</title>
+      <table>
+        <search>
+          <query>eventtype=tomato "tag::eventtype"=authentication host="$router$"
+| stats count by tag::action,app</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">100</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+    <panel>
+      <title>Event Count by Sourcetype</title>
+      <table>
+        <search>
+          <query>| tstats summariesonly=true values(host) as host count(sourcetype) as count where `tomato_index` by sourcetype |search host="$router$" |fields host,sourcetype,count</query>
+          <earliest>$field1.earliest$</earliest>
+          <latest>$field1.latest$</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">100</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+</form>
